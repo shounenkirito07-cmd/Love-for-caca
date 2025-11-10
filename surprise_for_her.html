@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise For Her 💖</title>
+    <base href="./"> <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fce4ec; /* Warna pink lembut */
+            overflow: hidden; /* Mencegah scroll saat ada hati */
+            position: relative;
+        }
+
+        #openBtn {
+            padding: 15px 30px;
+            font-size: 24px;
+            background-color: #ff80ab;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        #openBtn:hover {
+            background-color: #ff4081;
+        }
+
+        #viewer {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        #photo {
+            width: 100%;
+            height: auto;
+            max-height: 450px;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #caption {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d81b60;
+            margin: 15px 0;
+            padding: 0 15px;
+            min-height: 40px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #final {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 20;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #final-message {
+            font-size: 30px;
+            color: #e91e63;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        #replay, #stop {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #replay {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #stop {
+            background-color: #f44336;
+            color: white;
+        }
+
+        /* Styling untuk Hati yang Berjatuhan */
+        #hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: none;
+            z-index: 5;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: 0;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="openBtn">Buka Kejutan Ini Untukmu!</button>
+
+    <div id="viewer">
+        <img id="photo" src="" alt="A sweet photo">
+        <div id="caption"></div>
+    </div>
+
+    <div id="final">
+        <div id="final-message">THE BEAUTY IS IN MY GIRL 💖<br>I LOVE MY CACA!</div>
+        <button id="replay">Replay</button>
+        <button id="stop">Stop Music</button>
+    </div>
+
+    <div id="hearts"></div>
+
+  <script>
+    let data = {
+      images: [
+        "images/1.jpg",
+        "images/2.jpg",
+        "images/3.jpg"
+      ],
+      // Pastikan path ini benar!
+      audioUrl: "audio/love.mp3" 
+    };
+
+    const openBtn = document.getElementById('openBtn');
+    const viewer = document.getElementById('viewer');
+    const photo = document.getElementById('photo');
+    const captionEl = document.getElementById('caption');
+    const finalEl = document.getElementById('final');
+    const replayBtn = document.getElementById('replay');
+    const stopBtn = document.getElementById('stop');
+    const heartsLayer = document.getElementById('hearts');
+
+    const captions = [
+      "I LOVE HER SMILE 😍",
+      "I REALLY LOVE SPENDING TIME WITH HER 💞",
+      "SHE IS SO BEAUTIFUL, SO CUTE AND SO SWEET 🌸"
+    ];
+
+    let audio = new Audio();
+    audio.loop = true;
+    audio.preload = 'auto'; // FIX: Memastikan lagu dimuat penuh (tidak terpotong 3 detik)
+    audio.src = data.audioUrl; 
+
+    let heartsInterval = null;
+
+    function showHearts(){
+      heartsLayer.style.display = 'block';
+      heartsInterval = setInterval(()=>{
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const shapes = ['💖','💗','💞','💓','💕','🩷'];
+        h.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        h.style.left = Math.random()*100 + '%';
+        h.style.fontSize = (20 + Math.random()*40) + 'px';
+        heartsLayer.appendChild(h);
+        const duration = 3000 + Math.random()*2000;
+        h.animate([
+          {transform:'translateY(0) scale(1)', opacity:1},
+          {transform:'translateY(-120vh) scale(0.6)', opacity:0}
+        ], {duration, easing:'linear'});
+        setTimeout(()=>h.remove(), duration);
+      }, 120); 
+    }
+
+    function stopHearts(){
+      heartsLayer.style.display = 'none';
+      clearInterval(heartsInterval);
+      heartsLayer.innerHTML = '';
+    }
+
+    // ==========================================================
+    // FUNGSI PERBAIKAN: showSlide (FIX Urutan Foto, Wajib Diganti)
+    // ==========================================================
+    function showSlide(i){
+        // Hentikan proses jika semua foto sudah ditampilkan
+        if (i >= data.images.length){
+            setTimeout(()=>{
+                finalEl.style.display = 'flex';
+                showHearts();
+            }, 700);
+            return;
+        }
+        
+        // 1. SET SUMBER FOTO & CAPTION
+        photo.src = data.images[i];
+        captionEl.textContent = captions[i] || "";
+        captionEl.style.opacity = 0;
+        photo.style.opacity = 0;
+
+        // 2. LISTENER ONLOAD (Perbaikan Timing Utama)
+        // Memaksa JavaScript MENUNGGU gambar selesai dimuat (load) sebelum mengatur timer
+        photo.onload = function() {
+            // Tampilkan foto setelah dimuat
+            setTimeout(()=>{
+                photo.style.opacity = 1;
+                captionEl.style.opacity = 1;
+            }, 60);
+
+            // Lanjutkan ke slide berikutnya HANYA SETELAH tampilan selesai
+            setTimeout(()=>showSlide(i+1), 2500); 
+        };
+
+        // 3. Atasi Cache: Jika gambar sudah di cache, kita panggil fungsi onload() secara manual.
+        if (photo.complete) {
+            photo.onload();
+        }
+    }
+
+    // ==========================================================
+    // FUNGSI PERBAIKAN: startSequence (FIX Audio Reset, Wajib Diganti)
+    // ==========================================================
+    function startSequence(){
+        // Pastikan semua interval (hati, dll.) dihentikan
+        stopHearts(); 
+        
+        openBtn.style.display = 'none';
+        viewer.style.display = 'flex';
+        
+        // Reset audio ke detik 0 dan putar (FIX Masalah Audio)
+        audio.currentTime = 0; 
+        audio.play().catch(e => console.log("Gagal Play Audio:", e)); // Mulai putar audio
+        
+        showSlide(0); // Mulai slideshow dari foto pertama
+    }
+
+    // ==========================================================
+    // EVENT LISTENERS
+    // ==========================================================
+    openBtn.addEventListener('click', startSequence);
+
+    replayBtn.addEventListener('click', ()=>{
+      finalEl.style.display = 'none';
+      stopHearts();
+      
+      // startSequence akan mengurus reset audio dan play
+      startSequence(); 
+    });
+    
+    stopBtn.addEventListener('click', ()=>{
+      audio.pause(); // Jeda Audio
+      stopHearts();
+    });
+  </script>
+</body>
+</html>
+
