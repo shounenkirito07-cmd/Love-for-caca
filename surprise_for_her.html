@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surprise For Her 💖</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffe3f0, #ffb6d9);
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+    }
+    #openBtn {
+      font-size: 1.4em;
+      background: #ff69b4;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 40vh;
+      box-shadow: 0 0 15px #ffbde0;
+      transition: transform 0.3s;
+    }
+    #openBtn:hover {
+      transform: scale(1.1);
+    }
+    #viewer {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #photo {
+      width: 90%;
+      max-width: 380px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255,105,180,0.8);
+      margin-bottom: 15px;
+      transition: opacity 0.7s;
+    }
+    #caption {
+      font-size: 1.3em;
+      opacity: 0;
+      text-shadow: 0 0 8px #ff8fcf;
+      transition: opacity 0.7s;
+    }
+    #final {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,182,219,0.95);
+      color: white;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 1.6em;
+      padding: 20px;
+      text-align: center;
+    }
+    #final button {
+      margin-top: 20px;
+      background: white;
+      color: #ff69b4;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      box-shadow: 0 0 12px #ffb6d9;
+    }
+    #hearts {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      color: #ff8ecf;
+      text-shadow: 0 0 10px #fff0f6;
+      animation: floatUp 3s linear infinite;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-110vh) scale(0.6); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <button id="openBtn">Tap Here 💕</button>
+
+  <div id="viewer">
+    <img id="photo" src="" alt="photo" />
+    <div id="caption"></div>
+  </div>
+
+  <div id="final">
+    <div>THE BEAUTY IS IN MY GIRL 💖<br>I LOVE MY GIRL EVEN MORE 💞</div>
+    <button id="replay">Replay</button>
+    <button id="stop">Stop Music</button>
+  </div>
+
+  <div id="hearts"></div>
+
+    <script>
+    let data = {
+      images: [
+        "images/1.jpg",
+        "images/2.jpg",
+        "images/3.jpg"
+      ],
+      // PASTIKAN FILE AUDIO ANDA ADA DI DALAM FOLDER 'audio'
+      // JIKA NAMA FILE ANDA BEDA DARI 'love.mp3', GANTI DI SINI.
+      audioUrl: "audio/love.mp3" 
+    };
+
+    const openBtn = document.getElementById('openBtn');
+    const viewer = document.getElementById('viewer');
+    const photo = document.getElementById('photo');
+    const captionEl = document.getElementById('caption');
+    const finalEl = document.getElementById('final');
+    const replayBtn = document.getElementById('replay');
+    const stopBtn = document.getElementById('stop');
+    const heartsLayer = document.getElementById('hearts');
+
+    const captions = [
+      "I LOVE HER SMILE 😍",
+      "I REALLY LOVE SPENDING TIME WITH HER 💞",
+      "SHE IS SO BEAUTIFUL, SO CUTE AND SO SWEET 🌸"
+    ];
+
+    let audio = new Audio();
+    audio.loop = true;
+    audio.preload = 'auto'; 
+    // PENTING: Muat sumber audio segera setelah objek dibuat
+    audio.src = data.audioUrl; 
+
+    let heartsInterval = null;
+
+    function showHearts(){
+      heartsLayer.style.display = 'block';
+      heartsInterval = setInterval(()=>{
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const shapes = ['💖','💗','💞','💓','💕','🩷'];
+        h.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        h.style.left = Math.random()*100 + '%';
+        h.style.fontSize = (20 + Math.random()*40) + 'px';
+        heartsLayer.appendChild(h);
+        const duration = 3000 + Math.random()*2000;
+        h.animate([
+          {transform:'translateY(0) scale(1)', opacity:1},
+          {transform:'translateY(-120vh) scale(0.6)', opacity:0}
+        ], {duration, easing:'linear'});
+        setTimeout(()=>h.remove(), duration);
+      }, 120); 
+    }
+
+    function stopHearts(){
+      heartsLayer.style.display = 'none';
+      clearInterval(heartsInterval);
+      heartsLayer.innerHTML = '';
+    }
+
+    function playAudioIfAvailable(){
+      audio.play().catch(e => console.log("Gagal Play Audio (Security Restriction):", e));
+    }
+
+    function showSlide(i){
+      if (i >= data.images.length){
+        setTimeout(()=>{
+          finalEl.style.display = 'flex';
+          showHearts();
+        }, 700);
+        return;
+      }
+      photo.src = data.images[i];
+      captionEl.textContent = captions[i] || "";
+      captionEl.style.opacity = 0;
+      photo.style.opacity = 0;
+      setTimeout(()=>{
+        photo.style.opacity = 1;
+        captionEl.style.opacity = 1;
+      }, 60);
+      setTimeout(()=>showSlide(i+1), 2500);
+    }
+
+    function startSequence(){
+      openBtn.style.display = 'none';
+      viewer.style.display = 'flex';
+      
+      playAudioIfAvailable(); // Musik mulai!
+      
+      showSlide(0);
+    }
+
+    openBtn.addEventListener('click', startSequence);
+
+    replayBtn.addEventListener('click', ()=>{
+      finalEl.style.display = 'none';
+      stopHearts();
+      
+      audio.currentTime = 0; 
+      startSequence();
+    });
+    
+    stopBtn.addEventListener('click', ()=>{
+      audio.pause(); // Jeda Audio
+      stopHearts();
+    });
+
+  </script>
+</body>
+</html>
